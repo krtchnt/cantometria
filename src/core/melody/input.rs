@@ -5,7 +5,7 @@ use std::{fs::File, io::BufReader, path::Path};
 
 use crate::{
     core::{DynNoteTimeSeries, model::Note, usize_to_f64},
-    error::NewInputMelodyError,
+    error::NewUnpaddedInputMelodyError,
 };
 
 fn frequency_to_note_number(frequency: f64) -> Option<f64> {
@@ -27,7 +27,7 @@ pub struct UnpaddedInputMelody {
 }
 
 impl UnpaddedInputMelody {
-    pub fn new(mut wav: WavFile) -> Result<Self, NewInputMelodyError> {
+    pub fn new(mut wav: WavFile) -> Result<Self, NewUnpaddedInputMelodyError> {
         const SIZE: usize = 1024;
         const PADDING: usize = SIZE / 2;
         const POWER_THRESHOLD: f64 = 1.0;
@@ -64,7 +64,7 @@ impl UnpaddedInputMelody {
                 );
                 samples_f64.clear();
             }
-            Ok::<_, NewInputMelodyError>(())
+            Ok::<_, NewUnpaddedInputMelodyError>(())
         })?;
 
         Ok(Self {

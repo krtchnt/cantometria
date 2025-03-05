@@ -40,6 +40,7 @@
             {
               packages = with pkgs; [
                 fontconfig
+                cargo-edit
               ];
               languages.rust = {
                 enable = true;

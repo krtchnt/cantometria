@@ -20,7 +20,6 @@ pub fn open_midi<P: AsRef<Path>>(path: P) -> Result<MidiFile, OpenMidiError> {
 
 pub struct RawUnpaddedTargetMelody {
     note_events: DynNonUniformNoteTimeSeries,
-    pub tempos: Box<[Timed<Tempo>]>,
 }
 
 impl RawUnpaddedTargetMelody {
@@ -85,10 +84,7 @@ impl RawUnpaddedTargetMelody {
 
         //dbg!(key_signatures);
 
-        Ok(Self {
-            note_events,
-            tempos: tempos.into(),
-        })
+        Ok(Self { note_events })
     }
 
     pub fn note_events(&self) -> NonUniformNoteTimeSeriesRef {

@@ -1,11 +1,10 @@
 use crate::{
-    core::{NoteTimeSeries, Tempo, Timed, UnpaddedInputMelody},
+    core::{NoteTimeSeries, UnpaddedInputMelody},
     interpolate::UnpaddedTargetMelody,
 };
 
 pub struct TargetMelody {
     notes: NoteTimeSeries,
-    tempos: Box<[Timed<Tempo>]>,
 }
 
 impl TargetMelody {
@@ -43,7 +42,6 @@ pub fn zero_pad_shorter_series(
 
     let target_melody = TargetMelody {
         notes: target.notes.into(),
-        tempos: target.tempos,
     };
     let input_melody = InputMelody {
         notes: input.notes.into(),

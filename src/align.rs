@@ -3,7 +3,7 @@ use rustfft::num_complex::Complex;
 
 use crate::core::{NoteSeries, usize_to_f64, usize_to_isize};
 
-pub fn compute_time_shift(target: &NoteSeries, input: &NoteSeries) -> isize {
+pub fn compute_time_shift(target: &NoteSeries, input: &NoteSeries) -> Option<isize> {
     let n = target.len();
     let mut planner = FftPlanner::new();
     let fft = planner.plan_fft_forward(n);
@@ -39,13 +39,12 @@ pub fn compute_time_shift(target: &NoteSeries, input: &NoteSeries) -> isize {
     let (max_shift, _) = input_fft
         .iter()
         .enumerate()
-        .max_by(|(_, a), (_, b)| a.re.total_cmp(&b.re))
-        .expect("input_fft must not be empty");
+        .max_by(|(_, a), (_, b)| a.re.total_cmp(&b.re))?;
 
     if max_shift < n / 2 {
-        usize_to_isize(max_shift)
+        Some(usize_to_isize(max_shift))
     } else {
-        usize_to_isize(max_shift) - usize_to_isize(n)
+        Some(usize_to_isize(max_shift) - usize_to_isize(n))
     }
 }
 
@@ -74,7 +73,7 @@ pub fn compute_note_shift(target: &NoteSeries, input: &NoteSeries) -> f64 {
         }
     }
 
-    assert!((count != 0), "No valid samples to compute amplitude shift");
+    debug_assert_ne!(count, 0, "No valid samples to compute amplitude shift");
     sum_diff / usize_to_f64(count)
 }
 

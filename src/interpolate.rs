@@ -4,7 +4,6 @@ use crate::core::{DynNoteTimeSeries, Timed, UnpaddedInputMelody};
 
 pub struct UnpaddedTargetMelody {
     pub notes: DynNoteTimeSeries,
-    pub tempos: Box<[Timed<crate::core::Tempo>]>,
 }
 
 impl crate::core::RawUnpaddedTargetMelody {
@@ -23,7 +22,6 @@ impl crate::core::RawUnpaddedTargetMelody {
 
         UnpaddedTargetMelody {
             notes: DynNoteTimeSeries::new(target, dt),
-            tempos: self.tempos,
         }
     }
 }

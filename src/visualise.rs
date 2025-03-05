@@ -1,10 +1,16 @@
+use std::path::Path;
+
 use ordered_float::FloatCore;
 
-use crate::core::{NoteSeries, NoteTimeSeries, Time, usize_to_f64};
-pub fn plot(
+use crate::{
+    core::{NoteSeries, NoteTimeSeries, Time, usize_to_f64},
+    error::PlotError,
+};
+pub fn plot<P: AsRef<Path>>(
     target_series: &NoteSeries,
     input_time_series: &NoteTimeSeries,
-) -> Result<(), Box<dyn std::error::Error>> {
+    file: P,
+) -> Result<(), PlotError> {
     use plotters::{
         chart::ChartBuilder,
         prelude::{BitMapBackend, Circle, IntoDrawingArea},
@@ -42,11 +48,12 @@ pub fn plot(
     let y_min = all_y.iter().copied().fold(f64::INFINITY, f64::min);
     let y_max = all_y.iter().copied().fold(f64::NEG_INFINITY, f64::max);
 
-    let root_area = BitMapBackend::new("data/time-series.png", (1024, 768)).into_drawing_area();
+    let target_fp = Path::new("target").join(file);
+    let root_area = BitMapBackend::new(&target_fp, (1024, 768)).into_drawing_area();
     root_area.fill(&WHITE)?;
 
     let mut chart = ChartBuilder::on(&root_area)
-        .caption("Target vs Input Time Series", ("sans-serif", 40))
+        .caption("Target vs Input Melodies", ("sans-serif", 40))
         .margin(10)
         .x_label_area_size(40)
         .y_label_area_size(40)
