@@ -1,0 +1,23 @@
+[package]
+name = "cantometria_tui"
+version = "0.1.0"
+edition = "2024"
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "forbid"
+
+[lints.clippy]
+multiple_unsafe_ops_per_block = "forbid"
+undocumented_unsafe_blocks = "forbid"
+enum_glob_use = "forbid"
+unwrap_used = "forbid"
+try_err = "forbid"
+pedantic = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+
+[dependencies]
+crossterm = "0.28.1"
+ratatui = "0.29.0"
+tui-big-text = "0.7.1"
+walkdir = "2.5.0"
+cantometria_lib = { path = "../cantometria_lib" }

@@ -48,7 +48,7 @@ pub fn plot<P: AsRef<Path>>(
     let y_min = all_y.iter().copied().fold(f64::INFINITY, f64::min);
     let y_max = all_y.iter().copied().fold(f64::NEG_INFINITY, f64::max);
 
-    let target_fp = Path::new("target").join(file);
+    let target_fp = Path::new("../target").join(file);
     let root_area = BitMapBackend::new(&target_fp, (1024, 768)).into_drawing_area();
     root_area.fill(&WHITE)?;
 

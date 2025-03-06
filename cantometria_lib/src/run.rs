@@ -13,13 +13,11 @@ use crate::grade::Accuracy;
 /// - input melody is empty
 /// - (visualise) plotting failed
 pub fn run<P: AsRef<Path>>(midi_file: P, wav_file: P) -> Result<Accuracy, RunError> {
-    let midi_dir = Path::new("midi");
-    let wav_dir = Path::new("test");
     #[cfg(feature = "visualise")]
     let fp = plot_target_file(&midi_file, &wav_file);
-    let midi = core::open_midi(midi_dir.join(midi_file))?;
+    let midi = core::open_midi(midi_file)?;
     let target_unpadded_raw = core::RawUnpaddedTargetMelody::new(&midi)?;
-    let wav = crate::core::open_wav(wav_dir.join(wav_file))?;
+    let wav = crate::core::open_wav(wav_file)?;
     let input_unpadded = core::UnpaddedInputMelody::new(wav)?;
 
     let target_unpadded = target_unpadded_raw.zero_order_hold(&input_unpadded);

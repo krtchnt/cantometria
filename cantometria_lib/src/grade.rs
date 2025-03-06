@@ -59,10 +59,10 @@ fn grade_timing(time_shift_secs: f64) -> f64 {
 
 #[derive(Debug)]
 pub struct Accuracy {
-    coverage: f64,
-    timing: f64,
-    pitch: f64,
-    key: f64,
+    pub coverage: f64,
+    pub timing: f64,
+    pub pitch: f64,
+    pub key: f64,
 }
 
 impl Accuracy {

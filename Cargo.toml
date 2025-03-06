@@ -1,32 +1,3 @@
-[package]
-name = "cantometria"
-version = "0.1.0"
-edition = "2024"
-
-[features]
-visualise = ["dep:plotters", "dep:plotters-bitmap"]
-
-[lints.rust]
-unsafe_op_in_unsafe_fn = "forbid"
-
-[lints.clippy]
-multiple_unsafe_ops_per_block = "forbid"
-undocumented_unsafe_blocks = "forbid"
-enum_glob_use = "forbid"
-unwrap_used = "forbid"
-try_err = "forbid"
-pedantic = { level = "deny", priority = -1 }
-nursery = { level = "deny", priority = -1 }
-
-[dev-dependencies]
-rstest = "0.25.0"
-
-[dependencies]
-hound = "3.5.1"
-midi_file = "0.0.6"
-ordered-float = "5.0.0"
-pitch-detection = "0.3.0"
-rustfft = "6.2.0"
-thiserror = "2.0.12"
-plotters = { version = "0.3.7", optional = true }
-plotters-bitmap = { version = "0.3.7", optional = true }
+[workspace]
+resolver = "2"
+members = ["cantometria_lib", "cantometria_tui"]
