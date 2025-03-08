@@ -1,6 +1,5 @@
 use std::ops::Deref;
 
-use midi_file::file::MicrosecondsPerQuarter;
 use ordered_float::OrderedFloat;
 
 type NoteSample = Option<Note>;
@@ -87,13 +86,6 @@ impl<T: Clone> Timed<T> {
             value,
         }
     }
-}
-
-#[derive(Debug, Clone)]
-pub struct Tempo(pub MicrosecondsPerQuarter);
-
-impl Tempo {
-    pub const DEFAULT: Self = Self(MicrosecondsPerQuarter::new(500_000));
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

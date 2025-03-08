@@ -70,7 +70,11 @@ mod test {
         #[case] wav_file: P,
         #[case] expected_accuracy: R,
     ) {
-        let accuracy = run(midi_file, wav_file).expect("running failed");
+        let accuracy = run(
+            Path::new("../midi").join(midi_file),
+            Path::new("../test").join(wav_file),
+        )
+        .expect("running failed");
         assert!(expected_accuracy.contains(&accuracy.total_accuracy()));
     }
 }

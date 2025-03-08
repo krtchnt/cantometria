@@ -40,8 +40,6 @@ pub enum OpenMidiError {
 pub enum NewRawUnpaddedTargetMelodyError {
     #[error("midi file tracks len not equal to one: {}", .0)]
     MidiFileTracksLenNotOne(u32),
-    #[error("unknown track key signature")]
-    UnknownKeySignature,
     #[error("unsupported time division type (SMPTE)")]
     UnsupportedDivisionType,
 }

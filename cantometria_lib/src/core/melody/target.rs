@@ -3,14 +3,11 @@ use std::{io::BufReader, path::Path};
 use midi_file::{
     MidiFile,
     core::Message,
-    file::{Division, Event, MetaEvent},
+    file::{Division, Event, MetaEvent, MicrosecondsPerQuarter},
 };
 
 use crate::{
-    core::{
-        DynNonUniformNoteTimeSeries, Note, Timed,
-        model::{NonUniformNoteTimeSeriesRef, Tempo},
-    },
+    core::{DynNonUniformNoteTimeSeries, Note, Timed, model::NonUniformNoteTimeSeriesRef},
     error::{NewRawUnpaddedTargetMelodyError, OpenMidiError},
 };
 
@@ -36,19 +33,14 @@ impl RawUnpaddedTargetMelody {
         // SAFETY: at this point, midi.tracks_len() == 1, so this is safe
         let track = unsafe { midi.tracks().next().unwrap_unchecked() };
 
-        let mut key_signatures = Vec::new();
-        let mut tempos: Vec<Timed<Tempo>> = Vec::new();
+        let mut last_tempo: Option<MicrosecondsPerQuarter> = None;
         let mut note_events = Vec::new();
         let mut time = 0.;
 
         for event in track.events() {
-            let last_tempo = tempos
-                .last()
-                .map_or_else(|| &Tempo::DEFAULT, |sample| &sample.value);
-            time +=
-                f64::from(event.delta_time() * last_tempo.0.get()) / (f64::from(tpqn.get()) * 1e6);
-            #[allow(clippy::match_wildcard_for_single_variants)]
-            match event.event() /* TODO: make this #[non_exhaustive] to remove the above lint */ {
+            time += f64::from(event.delta_time() * last_tempo.unwrap_or_default().get())
+                / (f64::from(tpqn.get()) * 1e6);
+            match event.event() {
                 Event::Midi(midi_event) => {
                     match midi_event {
                         Message::NoteOn(note_on)
@@ -57,7 +49,7 @@ impl RawUnpaddedTargetMelody {
                             note_events.push(Timed::new(
                                 time,
                                 Some(crate::core::Note {
-                                    note_number: note_on.note_number().get().into()
+                                    note_number: note_on.note_number().get().into(),
                                 }),
                             ));
                         }
@@ -67,22 +59,10 @@ impl RawUnpaddedTargetMelody {
                         _ => {}
                     };
                 }
-                Event::Meta(meta_event) => match meta_event {
-                    MetaEvent::KeySignature(signature) => {
-                        key_signatures.push(Timed::new(time, *signature));
-                    }
-                    MetaEvent::SetTempo(tempo) => tempos.push(Timed::new(time, Tempo(*tempo))),
-                    _ => {}
-                },
+                Event::Meta(MetaEvent::SetTempo(tempo)) => last_tempo = Some(*tempo),
                 _ => {}
             }
         }
-
-        if key_signatures.is_empty() {
-            return Err(NewRawUnpaddedTargetMelodyError::UnknownKeySignature);
-        };
-
-        //dbg!(key_signatures);
 
         Ok(Self { note_events })
     }

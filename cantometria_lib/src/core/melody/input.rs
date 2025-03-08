@@ -40,11 +40,8 @@ impl UnpaddedInputMelody {
         let mut notes = Vec::new();
 
         let num_channels = f64::from(spec.channels);
-        let sample_rate_f64 = usize_to_f64(sample_rate);
-        let chunk_duration_seconds = (usize_to_f64(SIZE) / num_channels) / sample_rate_f64;
-        // let total_samples = f64::from(wav.len());
-        // let total_frames = total_samples / num_channels;
-        // let duration = total_frames / sample_rate_f64;
+        let chunk_duration_seconds =
+            (usize_to_f64(SIZE) / num_channels) / usize_to_f64(sample_rate);
 
         wav.samples::<i16>().try_for_each(|s| {
             let sample = f64::from(s?) / f64::from(i16::MAX);

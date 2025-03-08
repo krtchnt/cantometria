@@ -49,7 +49,7 @@ pub fn plot<P: AsRef<Path>>(
     let y_max = all_y.iter().copied().fold(f64::NEG_INFINITY, f64::max);
 
     let target_fp = Path::new("../target").join(file);
-    let root_area = BitMapBackend::new(&target_fp, (1024, 768)).into_drawing_area();
+    let root_area = BitMapBackend::new(&target_fp, (1000, 500)).into_drawing_area();
     root_area.fill(&WHITE)?;
 
     let mut chart = ChartBuilder::on(&root_area)
@@ -59,7 +59,11 @@ pub fn plot<P: AsRef<Path>>(
         .y_label_area_size(40)
         .build_cartesian_2d(*x_min..*x_max, y_min..y_max)?;
 
-    chart.configure_mesh().draw()?;
+    chart
+        .configure_mesh()
+        .x_desc("Time (seconds)")
+        .y_desc("Note Number")
+        .draw()?;
 
     chart
         .draw_series(
@@ -67,7 +71,7 @@ pub fn plot<P: AsRef<Path>>(
                 .iter()
                 .map(|(x, y)| Circle::new((**x, *y), CIRCLE_SIZE, RED.filled())),
         )?
-        .label("Target")
+        .label("T[n]")
         .legend(|(x, y)| Circle::new((x + 10, y), CIRCLE_SIZE, RED.filled()));
 
     chart
@@ -76,7 +80,7 @@ pub fn plot<P: AsRef<Path>>(
                 .iter()
                 .map(|(x, y)| Circle::new((**x, *y), CIRCLE_SIZE, BLUE.filled())),
         )?
-        .label("Input")
+        .label("I[n]")
         .legend(|(x, y)| Circle::new((x + 10, y), CIRCLE_SIZE, BLUE.filled()));
 
     chart.configure_series_labels().border_style(BLACK).draw()?;

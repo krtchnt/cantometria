@@ -1,3 +1,6 @@
+use std::{collections::HashMap, path::PathBuf};
+
+use cantometria_lib::Accuracy;
 use ratatui::widgets::ListState;
 use walkdir::{DirEntry, WalkDir};
 
@@ -13,6 +16,7 @@ pub struct App {
     pub current_screen: CurrentScreen,
     pub midi_path_list: PathList,
     pub wav_path_list: PathList,
+    pub accuracies: HashMap<(PathBuf, PathBuf), Accuracy>,
 }
 
 impl App {
@@ -37,6 +41,7 @@ impl App {
                     })
                 })
                 .collect(),
+            accuracies: HashMap::new(),
         }
     }
 }

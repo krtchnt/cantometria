@@ -123,7 +123,7 @@ fn color_grade(grade: f64) -> Color {
     }
 }
 
-fn render_grading(frame: &mut Frame<'_>, app: &App, chunks: &[Rect]) {
+fn render_grading(frame: &mut Frame<'_>, app: &mut App, chunks: &[Rect]) {
     let (Some(midi_path_idx), Some(wav_path_idx)) = (
         app.midi_path_list.state.selected(),
         app.wav_path_list.state.selected(),
@@ -149,7 +149,10 @@ fn render_grading(frame: &mut Frame<'_>, app: &App, chunks: &[Rect]) {
 
     let midi_file = app.midi_path_list.items[midi_path_idx].path();
     let wav_file = app.wav_path_list.items[wav_path_idx].path();
-    let accuracy = cantometria_lib::run(midi_file, wav_file).expect("msg");
+    let accuracy = app
+        .accuracies
+        .entry((midi_file.to_path_buf(), wav_file.to_path_buf()))
+        .or_insert_with(|| cantometria_lib::run(midi_file, wav_file).expect("msg"));
 
     let desc = BigText::builder()
         .pixel_size(PixelSize::Sextant)

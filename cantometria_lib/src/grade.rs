@@ -19,13 +19,15 @@ fn distance_to_nearest_octave(x: f64) -> f64 {
 /// * whole perfect fifth and perfect forth shifts get a moderate compensation (~50%).
 /// * other intervals are not compensated.
 fn grade_key(d: f64) -> f64 {
-    const FRAC_3_LOG6_3_4: f64 = 0.459_860_394_574_093_83;
-    const FRAC_3_4_MUL_LN_6: f64 = 0.418_582_969_913_435_47;
+    /// `(3*log_6(3))/4`
+    const FRAC_3_LOG6_3_OVER_4: f64 = 0.459_860_394_574_093_83;
+    /// `3/(4 * ln(6))`
+    const FRAC_3_OVER_4_LN_6: f64 = 0.418_582_969_913_435_47;
     allow_perfection(match d {
         0.0..0.5 => ((-2.0 * d).mul_add(d, 0.5 * d) + 1.).min(1.),
-        0.5..3.0 => FRAC_3_4_MUL_LN_6.mul_add(-d.ln(), FRAC_3_LOG6_3_4),
+        0.5..3.0 => FRAC_3_OVER_4_LN_6.mul_add(-d.ln(), FRAC_3_LOG6_3_OVER_4),
         3.0..4.0 => 0.0,
-        4.0..6.0 => (-0.25f64).mul_add((std::f64::consts::PI * d).sin(), 0.25),
+        4.0..6.0 => (-0.25f64).mul_add((std::f64::consts::PI * d).cos(), 0.25),
         _ => 0.0,
     })
 }
@@ -68,6 +70,7 @@ pub struct Accuracy {
 impl Accuracy {
     const PITCH_WEIGHT: f64 = 0.75;
 
+    #[must_use]
     pub fn total_accuracy(&self) -> f64 {
         self.coverage
             * self.timing
